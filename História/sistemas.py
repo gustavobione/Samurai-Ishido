@@ -131,7 +131,6 @@ def evoluir_capitulo_2(jogador):
     jogador = menu_evolucao(jogador)
     return jogador
 
-# Coloque isso no seu sistemas.py
 def evoluir_capitulo_3(jogador):
     print("\n" + "="*60)
     slow_print("                    O DESCANSO DO GUERREIRO - A QUEDA")
@@ -150,6 +149,28 @@ def evoluir_capitulo_3(jogador):
     slow_print(
         "Mas um samurai desarmado ainda é um samurai. O desespero aguça seus sentidos "
         "como nenhuma vitória jamais fez."
+    )
+
+    jogador = menu_evolucao(jogador)
+    return jogador
+
+def evoluir_capitulo_4(jogador):
+    print("\n" + "="*60)
+    slow_print("                    O DESCANSO DO GUERREIRO - A TEMPESTADE")
+    print("="*60 + "\n")
+
+    slow_print(
+        "Você acende uma fogueira fora da Caverna do Espelho D'Água. "
+        "A luz das chamas reflete nas lâminas gêmeas que repousam em seu colo."
+    )
+    slow_print(
+        "Sobreviver na lama sem sua espada ensinou-lhe a paciência da água. "
+        "A fraqueza momentânea lapidou o orgulho, e agora, com o poder do Nitoryu fluindo "
+        "em seus braços, não há fera, demônio ou magia capaz de deter sua caminhada."
+    )
+    slow_print(
+        "O Mago Kuroi Shin'en está no topo da Torre do Abismo, ignorando a tempestade "
+        "de aço que marchará contra seus portões amanhã. É a hora do julgamento final."
     )
 
     jogador = menu_evolucao(jogador)

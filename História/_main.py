@@ -3,6 +3,7 @@ import capitulo_0 as prologo
 import capitulo_1
 import capitulo_2
 import capitulo_3
+import capitulo_4
 import sistemas
 
 
@@ -75,11 +76,17 @@ def iniciar_jogo():
     mostrar_status(jogador)
 
     # --- JOGA O CAPÍTULO 3 ---
-    import capitulo_3
     jogador = capitulo_3.jogar(jogador)
     if checar_morte(jogador): return
 
     jogador = sistemas.evoluir_capitulo_3(jogador)
+    mostrar_status(jogador)
+
+        # --- JOGA O CAPÍTULO 4 ---
+    jogador = capitulo_4.jogar(jogador)
+    if checar_morte(jogador): return
+
+    jogador = sistemas.evoluir_capitulo_4(jogador)
     mostrar_status(jogador)
 
 
