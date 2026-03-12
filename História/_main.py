@@ -7,6 +7,7 @@ import capitulo_2
 import capitulo_3
 import capitulo_4
 import capitulo_5
+import boss
 import sistemas
 
 
@@ -86,9 +87,7 @@ def iniciar_jogo():
     layout.painel_status(jogador)
 
     # ================= BOSS FINAL =================
-    # import boss
-    # layout.cabecalho("O ÁPICE DA MONTANHA")
-    # boss.jogar(jogador)
+    boss.jogar(jogador)
 
 
 if __name__ == "__main__":
