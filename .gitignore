@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Pastas específicas do seu projeto
+# Isso cobre o caminho que você mencionou
+História/__pycache__/
+
+# Ambientes Virtuais (MUITO importante ignorar)
+venv/
+.venv/
+env/
+ENV/
+
+# Configurações de IDEs
+.vscode/
+.idea/
+
+# Arquivos de log e temporários
+*.log
+.pytest_cache/
+.tox/
