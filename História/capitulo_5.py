@@ -1,12 +1,7 @@
 # capitulo_5.py
 import time
 import random
-
-def slow_print(texto, atraso=0.03):
-    for char in texto:
-        print(char, end="", flush=True)
-        time.sleep(atraso)
-    print("\n")
+import layout
 
 def rolar_teste(atributo_nome, valor_atributo, dificuldade=20):
     d20 = random.randint(1, 20)
@@ -19,7 +14,7 @@ def rolar_teste(atributo_nome, valor_atributo, dificuldade=20):
 
 def iniciar_combate_torre(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
     """Combate especial do Cap 5: Inclui hordas e o Roubo de Vida Lunar."""
-    slow_print(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
+    layout.imprimir_lento(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
     
     bonus_armadura = jogador.get("bonus_defesa", 0)
     mod_defesa = (jogador.get("destreza", 10) + jogador.get("kenjutsu", 10)) // 4
@@ -27,7 +22,7 @@ def iniciar_combate_torre(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano)
     bonus_ataque_inimigo = max_dano // 2
     
     while hp_inimigo > 0 and jogador["vitalidade"] > 0:
-        print("\n" + "-"*50)
+        layout.divisoria()
         max_hp = jogador.get("max_vitalidade", jogador["vitalidade"])
         print(f"♥ Seu HP: {jogador['vitalidade']}/{max_hp}  |  🛡️ Sua Defesa: {defesa_jogador}  |  💀 HP Inimigo: {hp_inimigo}")
         
@@ -41,30 +36,30 @@ def iniciar_combate_torre(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano)
             bonus_arma = jogador.get("bonus_dano_arma", 6)
             dano_jogador = random.randint(5, 12) + (jogador.get("kenjutsu", 10) // 2) + bonus_arma
             
-            slow_print(f"> A Kagekiri queima como um sol escuro! Você causa {dano_jogador} de dano ao inimigo.")
+            layout.imprimir_lento(f"> A Kagekiri queima como um sol escuro! Você causa {dano_jogador} de dano ao inimigo.")
             hp_inimigo -= dano_jogador
             
             # MECÂNICA DO LUAR: Roubo de Vida (Cura 50% do dano causado)
             cura_lunar = dano_jogador // 2
             jogador["vitalidade"] = min(max_hp, jogador["vitalidade"] + cura_lunar)
-            slow_print(f"> A Mizukiri brilha com o luar! O sangue inimigo revitaliza você (+{cura_lunar} HP).")
+            layout.imprimir_lento(f"> A Mizukiri brilha com o luar! O sangue inimigo revitaliza você (+{cura_lunar} HP).")
             
             if hp_inimigo <= 0:
-                slow_print(f"\nOs corpos caem aos seus pés. Você sobreviveu ao combate!")
+                layout.imprimir_lento(f"\nOs corpos caem aos seus pés. Você sobreviveu ao combate!")
                 return "vitoria"
         
         elif acao == "2":
             if rolar_teste("destreza", jogador.get("destreza", 10), 22):
-                slow_print("> Você usa as sombras e recua para a sala anterior. Fuga bem-sucedida!")
+                layout.imprimir_lento("> Você usa as sombras e recua para a sala anterior. Fuga bem-sucedida!")
                 return "fuga"
             else:
-                slow_print("> Você tenta recuar, mas a horda bloqueia a porta!")
+                layout.imprimir_lento("> Você tenta recuar, mas a horda bloqueia a porta!")
         else:
-            slow_print("> Ação inválida! Você hesita!")
+            layout.imprimir_lento("> Ação inválida! Você hesita!")
             
         # Turno do Inimigo
         if hp_inimigo > 0:
-            slow_print(f"\n[Turno Inimigo: {nome_inimigo}]")
+            layout.imprimir_lento(f"\n[Turno Inimigo: {nome_inimigo}]")
             dado_ataque = random.randint(1, 20)
             total_ataque = dado_ataque + bonus_ataque_inimigo
             time.sleep(0.5)
@@ -73,10 +68,10 @@ def iniciar_combate_torre(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano)
             
             if total_ataque >= defesa_jogador:
                 dano_sofrido = random.randint(min_dano, max_dano)
-                slow_print(f"> 💥 O ataque rompe sua guarda! Você perde {dano_sofrido} de HP.")
+                layout.imprimir_lento(f"> 💥 O ataque rompe sua guarda! Você perde {dano_sofrido} de HP.")
                 jogador["vitalidade"] -= dano_sofrido
             else:
-                slow_print(f"> ⚔️ Suas duas espadas giram como um redemoinho, bloqueando o ataque perfeito!")
+                layout.imprimir_lento(f"> ⚔️ Suas duas espadas giram como um redemoinho, bloqueando o ataque perfeito!")
             
     if jogador["vitalidade"] <= 0: return "morte"
 
@@ -85,16 +80,12 @@ def iniciar_combate_torre(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano)
 # CENA 1: A ENTRADA E O LABIRINTO (ANDAR INFERIOR)
 # ==========================================
 def labirinto_andar_1(jogador):
-    print("\n" + "="*60)
-    slow_print("          A TORRE DO ABISMO - O LABIRINTO DAS SOMBRAS")
-    print("="*60 + "\n")
+    layout.cabecalho("A TORRE DO ABISMO - O LABIRINTO DAS SOMBRAS")
 
-    slow_print(
+    layout.imprimir_lento(
         "Você cruza os antigos portões da Província Central. Onde outrora ficava o majestoso Castelo "
         "do seu pai, o Xogum, agora se ergue a Torre do Abismo. Uma estrutura colossal de obsidiana viva, "
-        "com veias pulsantes de magia negra que sobem até as nuvens tempestuosas."
-    )
-    slow_print(
+        "com veias pulsantes de magia negra que sobem até as nuvens tempestuosas.\n"
         "Kuroi Shin'en sabe que você está aqui. O palácio foi torcido magicamente em um labirinto mortal."
     )
     
@@ -104,8 +95,8 @@ def labirinto_andar_1(jogador):
     porta_esquerda_limpa = False
 
     while not progresso_andar and jogador["vitalidade"] > 0:
-        print("\n" + "-"*50)
-        slow_print("Você está no Hall das Ilusões (Andar 1). Existem três corredores massivos.")
+        layout.divisoria()
+        layout.imprimir_lento("Você está no Hall das Ilusões (Andar 1). Existem três corredores massivos.")
         print("1 - O Corredor da Esquerda (Cheira a ervas antigas e sangue pisado).")
         print("2 - O Corredor da Direita (Ecoa com o som de múltiplas armaduras batendo).")
         print("3 - A Grande Escadaria Central (Selada por uma porta com escrituras arcanas).")
@@ -114,48 +105,50 @@ def labirinto_andar_1(jogador):
         
         if escolha == "1":
             if porta_esquerda_limpa:
-                slow_print("Você já saqueou este corredor. Não há mais nada além de cadáveres.")
+                layout.imprimir_lento("Você já saqueou este corredor. Não há mais nada além de cadáveres.")
             else:
-                slow_print("\nVocê entra no Corredor da Esquerda. É a antiga Enfermaria da Guarda.")
-                slow_print("De repente, o chão cede! Paredes com espetos se fecham na sua direção!")
+                layout.imprimir_lento(
+                    "\nVocê entra no Corredor da Esquerda. É a antiga Enfermaria da Guarda.\n"
+                    "De repente, o chão cede! Paredes com espetos se fecham na sua direção!"
+                )
                 if rolar_teste("destreza", jogador.get("destreza", 10), 23):
-                    slow_print(
+                    layout.imprimir_lento(
                         "SUCESSO! Você salta pelas paredes, quicando entre as lâminas mortais "
-                        "e aterrissa no final da sala ileso."
-                    )
-                    slow_print(
+                        "e aterrissa no final da sala ileso.\n"
                         "No altar preservado, você encontra um frasco brilhante com o brasão Shiro. "
                         "Um Elixir Imperial ancestral!"
                     )
                     jogador["max_vitalidade"] += 15
                     jogador["vitalidade"] = jogador["max_vitalidade"]
-                    slow_print("[Loot Épico: Elixir Imperial bebido! (+15 HP Máximo e Cura Total!)]")
+                    print("[Loot Épico: Elixir Imperial bebido! (+15 HP Máximo e Cura Total!)]")
                     porta_esquerda_limpa = True
                 else:
                     dano = random.randint(10, 18)
                     jogador["vitalidade"] -= dano
-                    slow_print(f"FALHA! Você é rasgado pelos espetos antes de conseguir rolar para fora (-{dano} HP). A armadilha destrói a sala. Beco sem saída.")
+                    layout.imprimir_lento(f"FALHA! Você é rasgado pelos espetos antes de conseguir rolar para fora (-{dano} HP). A armadilha destrói a sala. Beco sem saída.")
                     porta_esquerda_limpa = True # Destruída
                     
         elif escolha == "2":
             if porta_direita_limpa:
-                slow_print("Apenas as cinzas dos mortos-vivos restam neste corredor.")
+                layout.imprimir_lento("Apenas as cinzas dos mortos-vivos restam neste corredor.")
             else:
-                slow_print("\nVocê entra no Antigo Arsenal. Três Guardas de Elite Reanimados e dois Mastins Demônios se viram para você!")
-                slow_print("Eles atacam em sincronia. Uma horda implacável!")
+                layout.imprimir_lento(
+                    "\nVocê entra no Antigo Arsenal. Três Guardas de Elite Reanimados e dois Mastins Demônios se viram para você!\n"
+                    "Eles atacam em sincronia. Uma horda implacável!"
+                )
                 resultado = iniciar_combate_torre(jogador, "Horda do Arsenal (5 Inimigos)", hp_inimigo=85, min_dano=6, max_dano=14)
                 
                 if resultado == "vitoria":
-                    slow_print("Com sua fúria lunar, você dizimou o esquadrão inteiro. Em uma arca trancada, você encontra poeira de cristal.")
+                    layout.imprimir_lento("Com sua fúria lunar, você dizimou o esquadrão inteiro. Em uma arca trancada, você encontra poeira de cristal.")
                     jogador.setdefault("inventario", []).append("Pó de Estrela")
                     print("[Item Adicionado: Pó de Estrela (Aumenta os sentidos mágicos no futuro)]")
                     porta_direita_limpa = True
                 elif resultado == "fuga":
-                    slow_print("Você foge de volta para o Hall Principal, ofegante.")
+                    layout.imprimir_lento("Você foge de volta para o Hall Principal, ofegante.")
                     
         elif escolha == "3":
-            slow_print("\nVocê se aproxima da porta da Escadaria Central. Ela não tem fechadura, apenas uma charada Yokai entalhada a fogo.")
-            slow_print(
+            layout.imprimir_lento(
+                "\nVocê se aproxima da porta da Escadaria Central. Ela não tem fechadura, apenas uma charada Yokai entalhada a fogo.\n"
                 "'Sou a fome que não tem estômago. Devoro a madeira, derreto o aço, e o vento me dá asas. "
                 "Mas se a água me tocar, eu morro. O que sou eu?'"
             )
@@ -167,22 +160,22 @@ def labirinto_andar_1(jogador):
             resposta = input("\nQual a sua resposta? ").strip()
             
             if resposta == "2":
-                slow_print("SUCESSO! A porta de pedra se fragmenta em cinzas. O caminho para o Andar Superior está aberto!")
+                layout.imprimir_lento("SUCESSO! A porta de pedra se fragmenta em cinzas. O caminho para o Andar Superior está aberto!")
                 progresso_andar = True
             elif resposta == "4":
                 if rolar_teste("conhecimento", jogador.get("conhecimento", 10), 24):
-                    slow_print("SUCESSO! Sua mente afiada reconhece o feitiço de selamento. Você usa o cabo da espada para raspar a runa central, destrancando a porta!")
+                    layout.imprimir_lento("SUCESSO! Sua mente afiada reconhece o feitiço de selamento. Você usa o cabo da espada para raspar a runa central, destrancando a porta!")
                     progresso_andar = True
                 else:
-                    slow_print("FALHA! As runas brilham em vermelho e disparam um relâmpago arcano no seu peito!")
+                    layout.imprimir_lento("FALHA! As runas brilham em vermelho e disparam um relâmpago arcano no seu peito!")
                     jogador["vitalidade"] -= 10
                     print("Você toma 10 de dano mágico e é arremessado para trás.")
             else:
-                slow_print("Resposta incorreta! A porta cospe uma bola de chamas em você!")
+                layout.imprimir_lento("Resposta incorreta! A porta cospe uma bola de chamas em você!")
                 jogador["vitalidade"] -= 10
                 print("Você toma 10 de dano por queimaduras.")
         else:
-            print("Você perde tempo andando em círculos.")
+            layout.imprimir_lento("Você perde tempo andando em círculos.")
 
     return jogador
 
@@ -192,19 +185,13 @@ def labirinto_andar_1(jogador):
 def labirinto_andar_2(jogador):
     if jogador["vitalidade"] <= 0: return jogador
 
-    print("\n" + "="*60)
-    slow_print("          O JARDIM DE CARNE E A DUPLA ABOMINAÇÃO")
-    print("="*60 + "\n")
+    layout.cabecalho("O JARDIM DE CARNE E A DUPLA ABOMINAÇÃO")
 
-    slow_print(
+    layout.imprimir_lento(
         "Você sobe as escadas e chega ao Pátio Interno. O que era um lindo jardim zen com lago de carpas "
-        "foi corrompido. As árvores choram seiva vermelha e as pedras flutuam com gravidade zero."
-    )
-    slow_print(
+        "foi corrompido. As árvores choram seiva vermelha e as pedras flutuam com gravidade zero.\n"
         "O silêncio é quebrado por asas batendo e cascos pesados. Do céu escuro, mergulham DUAS abominações "
-        "conjuntas criadas para proteger os aposentos de Kuroi."
-    )
-    slow_print(
+        "conjuntas criadas para proteger os aposentos de Kuroi.\n"
         "À sua esquerda pousa um Tengu da Tempestade (Senhor dos Ventos). À sua direita, aterrissa um "
         "Gashadokuro (Um esqueleto gigante de 5 metros forjado com os ossos dos samurais mortos)."
     )
@@ -223,24 +210,24 @@ def labirinto_andar_2(jogador):
 
     if escolha == "1":
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 25):
-            slow_print("SUCESSO! O impacto da sua investida decepa a perna do esqueleto e corta a asa do Tengu antes da luta começar!")
+            layout.imprimir_lento("SUCESSO! O impacto da sua investida decepa a perna do esqueleto e corta a asa do Tengu antes da luta começar!")
             vantagem_boss = True
         else:
-            slow_print("FALHA! O vendaval do Tengu te atira contra o punho do Esqueleto Gigante!")
+            layout.imprimir_lento("FALHA! O vendaval do Tengu te atira contra o punho do Esqueleto Gigante!")
             jogador["vitalidade"] -= 12
             print("Você perde 12 HP pelo esmagamento!")
 
     elif escolha == "2":
         if rolar_teste("conhecimento", jogador["conhecimento"], 24):
-            slow_print("SUCESSO! Você nota um selo de papel no crânio do monstro de osso. Você arremessa uma adaga improvisada e rasga o selo, cortando o HP da criatura pela metade!")
+            layout.imprimir_lento("SUCESSO! Você nota um selo de papel no crânio do monstro de osso. Você arremessa uma adaga improvisada e rasga o selo, cortando o HP da criatura pela metade!")
             vantagem_boss = True
         else:
-            slow_print("FALHA! Você tenta focar, mas a velocidade do Tengu é monstruosa. Ele rasga suas costas com garras afiadas!")
+            layout.imprimir_lento("FALHA! Você tenta focar, mas a velocidade do Tengu é monstruosa. Ele rasga suas costas com garras afiadas!")
             jogador["vitalidade"] -= 10
             print("Você perde 10 HP na emboscada!")
             
     elif escolha == "3" and tem_po_estrela:
-        slow_print("Você arremessa o pó estelar! A magia residual cega os monstros e interrompe a sincronia deles. Você tem a vantagem absoluta!")
+        layout.imprimir_lento("Você arremessa o pó estelar! A magia residual cega os monstros e interrompe a sincronia deles. Você tem a vantagem absoluta!")
         vantagem_boss = True
         jogador.get("inventario").remove("Pó de Estrela")
         jogador["honra"] += 1
@@ -258,8 +245,10 @@ def labirinto_andar_2(jogador):
         
         if resultado == "morte" or jogador["vitalidade"] <= 0: return jogador
         
-        slow_print("\nVocê crava a Kagekiri no peito do Tengu e gira a Mizukiri explodindo o crânio do gigante.")
-        slow_print("A magia se desfaz. As portas imensas no fundo do jardim se abrem sozinhas, rangendo como almas atormentadas.")
+        layout.imprimir_lento(
+            "\nVocê crava a Kagekiri no peito do Tengu e gira a Mizukiri explodindo o crânio do gigante.\n"
+            "A magia se desfaz. As portas imensas no fundo do jardim se abrem sozinhas, rangendo como almas atormentadas."
+        )
         
     return jogador
 
@@ -269,31 +258,22 @@ def labirinto_andar_2(jogador):
 def transicao_boss(jogador):
     if jogador["vitalidade"] <= 0: return jogador
     
-    print("\n" + "="*60)
-    slow_print("          A ANTECÂMARA DO ABISMO")
-    print("="*60 + "\n")
+    layout.cabecalho("A ANTECÂMARA DO ABISMO")
 
-    slow_print(
+    layout.imprimir_lento(
         "Banhado no sangue e fuligem de dezenas de bestas, você cruza as portas duplas e adentra "
-        "a Antecâmara do Salão do Trono."
-    )
-    slow_print(
+        "a Antecâmara do Salão do Trono.\n"
         "O corredor final é forrado de estátuas dos antigos Xoguns da sua linhagem. Todos com os "
         "rostos deformados pela corrupção. A respiração pesa. A presença arcana é tão forte "
-        "que o próprio ar vibra em roxo e preto."
-    )
-    slow_print(
+        "que o próprio ar vibra em roxo e preto.\n"
         "No final do corredor majestoso repousa um portão de ouro negro. Atrás dele, "
-        "no topo da torre, o Feiticeiro Kuroi Shin'en detém o poder absoluto do Disco do Abismo."
-    )
-    
-    slow_print(
+        "no topo da torre, o Feiticeiro Kuroi Shin'en detém o poder absoluto do Disco do Abismo.\n"
         "Você olha para as suas duas lâminas. Elas pulsam em harmonia com as batidas do seu coração. "
         "Há vinte anos, Kazunari fugiu desta mesma sala com você, apenas um bebê em prantos. "
         "Hoje, o herdeiro voltou. E ele não está chorando."
     )
     
-    slow_print("\nO Labirinto foi vencido. O destino de Takenoko será decidido no confronto final.")
+    layout.imprimir_lento("\nO Labirinto foi vencido. O destino de Takenoko será decidido no confronto final.")
 
     return jogador
 
@@ -302,12 +282,10 @@ def transicao_boss(jogador):
 # GESTOR DO CAPÍTULO 5
 # ==========================================
 def jogar(jogador):
-    print("\n" + "=" * 75)
-    slow_print("                   CAPÍTULO 5: A TORRE DO ABISMO", 0.05)
-    print("=" * 75)
+    layout.cabecalho("CAPÍTULO 5: A TORRE DO ABISMO")
 
-    slow_print(
-        "\nO estilo Nitoryu tornou você uma lenda letal nas planícies, mas a torre que perfura as "
+    layout.imprimir_lento(
+        "O estilo Nitoryu tornou você uma lenda letal nas planícies, mas a torre que perfura as "
         "nuvens exige mais do que apenas aço. Exige a mente fria de um verdadeiro samurai."
     )
 

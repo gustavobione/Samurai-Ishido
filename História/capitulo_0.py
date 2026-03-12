@@ -1,13 +1,7 @@
 # prologo.py
 import time
 import random
-
-def slow_print(texto, atraso=0.03):
-    """Imprime o texto aos poucos para dar um efeito de RPG de terminal."""
-    for char in texto:
-        print(char, end='', flush=True)
-        time.sleep(atraso)
-    print("\n")
+import layout
 
 def rolar_atributos():
     """Rola 1d6 para os 4 atributos e soma com a base 10."""
@@ -21,9 +15,6 @@ def rolar_atributos():
         "conhecimento": 10 + random.randint(1, 6), # Sabedoria mística e fraqueza de Yokais
         "honra": 10                                # Honra estrita do Samurai
     }
-    
-    # Ajustando Vitalidade para ser um multiplicador melhor para HP (ex: atributo 15 = 150 HP)
-    # ou podemos manter números baixos. Vamos manter a dezena pura para simplificar o sistema.
     
     print(f"- Vitalidade (HP): {atributos['vitalidade']}")
     time.sleep(0.5)
@@ -39,82 +30,75 @@ def rolar_atributos():
     return atributos
 
 def jogar(jogador):
-    print("="*75)
-    slow_print("                          O DISCO DO ABISMO", 0.05)
-    print("="*75)
-    print("\n")
+    layout.cabecalho("O DISCO DO ABISMO")
     
     historia_parte_1 = (
-        "Tudo o que você sabe sobre o mundo lá fora são as palavras gravadas na sua mente\n"
-        "pela voz áspera do seu mestre, Kazunari. Ao redor da fogueira, cercados pela neve\n"
-        "eterna da Colina Lótus, ele costumava fechar os olhos cansados e lembrar.\n\n"
-
-        "'As terras de Takenoko respiravam paz', ele dizia, com um sorriso triste.\n"
-        "'Os camponeses colhiam arroz dourado sob um sol limpo. Os cinco Lordes governavam com\n"
-        "sabedoria sob a luz do seu pai, o Xogum Nobutatsu. Era um império de honra.'\n\n"
-
-        "Mas o rosto do mestre sempre escurecia ao mencionar o conselheiro.\n"
-        "'Eu nunca confiei em Kuroi Shin'en. Os olhos daquele sacerdote não refletiam a luz.\n"
+        "Tudo o que você sabe sobre o mundo lá fora são as palavras gravadas na sua mente "
+        "pela voz áspera do seu mestre, Kazunari. Ao redor da fogueira, cercados pela neve "
+        "eterna da Colina Lótus, ele costumava fechar os olhos cansados e lembrar.\n"
+        "'As terras de Takenoko respiravam paz', ele dizia, com um sorriso triste. "
+        "'Os camponeses colhiam arroz dourado sob um sol limpo. Os cinco Lordes governavam com "
+        "sabedoria sob a luz do seu pai, o Xogum Nobutatsu. Era um império de honra.'\n"
+        "Mas o rosto do mestre sempre escurecia ao mencionar o conselheiro. "
+        "'Eu nunca confiei em Kuroi Shin'en. Os olhos daquele sacerdote não refletiam a luz. "
         "Ele fedia a túmulos antigos e feitiçaria, mas seu pai... seu pai foi cegado pela paranoia.'\n"
-        "Kazunari contava como Kuroi envenenou a mente do Xogum, sussurrando mentiras sobre uma\n"
-        "falsa rebelião dos Lordes. Com medo de perder o trono, Nobutatsu exigiu que as sete partes\n"
-        "do lendário Disco do Abismo fossem tomadas dos Lordes e trazidas para a capital, unindo-as\n"
-        "às três que ele mesmo guardava.\n"
+        "Kazunari contava como Kuroi envenenou a mente do Xogum, sussurrando mentiras sobre uma "
+        "falsa rebelião dos Lordes. Com medo de perder o trono, Nobutatsu exigiu que as sete partes "
+        "do lendário Disco do Abismo fossem tomadas dos Lordes e trazidas para a capital, unindo-as "
+        "às três que ele mesmo guardava."
     )
-    slow_print(historia_parte_1)
+    layout.imprimir_lento(historia_parte_1)
     input("[Pressione Enter para continuar a ouvir a lembrança...]\n")
 
     historia_parte_2 = (
-        "Foi a ruína de tudo. Ao juntar as dez partes do artefato, Kuroi revelou sua verdadeira face.\n\n"
-
-        "'Eu estava no pátio quando o céu apodreceu', lembrava Kazunari, apertando o coto do\n"
-        "próprio ombro esquerdo. 'As nuvens sangraram. Os portões do submundo foram arrancados de\n"
-        "suas dobradiças. Yokais, os demônios que achávamos ser apenas lendas de ninar, rasgaram o véu\n"
-        "e marcharam sobre nós. A capital foi engolida por trevas e fogo.'\n\n"
-
-        "Kuroi assassinou o Xogum. Ele precisava do sangue da linhagem sagrada do clã Shiro para\n"
-        "selar o poder do Disco para sempre. Mas Kazunari, banhado no sangue dos próprios irmãos de\n"
-        "armas, invadiu os aposentos reais. Ele pegou você, o filho mais novo, um bebê em prantos.\n\n"
-        
-        "A fuga foi um pesadelo. Para cruzar os portões, Kazunari teve que enfrentar uma abominação\n"
-        "feita de sombras e ossos, invocada pelo próprio Kuroi. 'A fera me cobrou um preço alto',\n"
-        "ele suspirava, tocando o espaço vazio onde seu braço deveria estar. Mas com a outra mão,\n"
-        "ele segurava você e a Kagekiri, a lâmina sagrada do palácio. O preço foi pago.\n"
+        "Foi a ruína de tudo. Ao juntar as dez partes do artefato, Kuroi revelou sua verdadeira face.\n"
+        "'Eu estava no pátio quando o céu apodreceu', lembrava Kazunari, apertando o coto do "
+        "próprio ombro esquerdo. 'As nuvens sangraram. Os portões do submundo foram arrancados de "
+        "suas dobradiças. Yokais, os demônios que achávamos ser apenas lendas de ninar, rasgaram o véu "
+        "e marcharam sobre nós. A capital foi engolida por trevas e fogo.'\n"
+        "Kuroi assassinou o Xogum. Ele precisava do sangue da linhagem sagrada do clã Shiro para "
+        "selar o poder do Disco para sempre. Mas Kazunari, banhado no sangue dos próprios irmãos de "
+        "armas, invadiu os aposentos reais. Ele pegou você, o filho mais novo, um bebê em prantos.\n"
+        "A fuga foi um pesadelo. Para cruzar os portões, Kazunari teve que enfrentar uma abominação "
+        "feita de sombras e ossos, invocada pelo próprio Kuroi. 'A fera me cobrou um preço alto', "
+        "ele suspirava, tocando o espaço vazio onde seu braço deveria estar. Mas com a outra mão, "
+        "ele segurava você e a Kagekiri, a lâmina sagrada do palácio. O preço foi pago."
     )
-    slow_print(historia_parte_2)
+    layout.imprimir_lento(historia_parte_2)
     input("[Pressione Enter para continuar...]\n")
 
     historia_parte_3 = (
-        "Por 20 anos, vocês não desceram a montanha. Kazunari exigiu de você o impossível.\n"
-        "Como ele lutava com apenas uma mão, ele lhe ensinou um Kenjutsu único, um estilo agressivo,\n"
-        "focado em destreza, evasão e golpes fatais. Ele lhe ensinou sobre os pontos fracos das\n"
-        "criaturas do folclore, preparando sua mente para a feitiçaria que dominava o mundo abaixo.\n\n"
-
-        "Mas o tempo é uma lâmina que corta até os guerreiros mais fortes. \n"
+        "Por 20 anos, vocês não desceram a montanha. Kazunari exigiu de você o impossível. "
+        "Como ele lutava com apenas uma mão, ele lhe ensinou um Kenjutsu único, um estilo agressivo, "
+        "focado em destreza, evasão e golpes fatais. Ele lhe ensinou sobre os pontos fracos das "
+        "criaturas do folclore, preparando sua mente para a feitiçaria que dominava o mundo abaixo.\n"
+        "Mas o tempo é uma lâmina que corta até os guerreiros mais fortes. "
         "Hoje, a tempestade de neve parou. O mestre Kazunari deu seu último suspiro.\n"
-        "Antes de partir, ele depositou a Kagekiri ('Corta-Sombras') em suas mãos. A katana,\n"
-        "forjada em aço de meteorito, brilhou com um leve tom azulado ao toque de um verdadeiro Shiro.\n"
-        "É a única arma capaz de purificar o feitiço de Kuroi.\n"
+        "Antes de partir, ele depositou a Kagekiri ('Corta-Sombras') em suas mãos. A katana, "
+        "forjada em aço de meteorito, brilhou com um leve tom azulado ao toque de um verdadeiro Shiro. "
+        "É a única arma capaz de purificar o feitiço de Kuroi."
     )
-    slow_print(historia_parte_3)
+    layout.imprimir_lento(historia_parte_3)
 
-    slow_print("Você termina de erguer o túmulo de pedras para Kazunari.")
-    slow_print("O vento sopra da base da montanha, trazendo o cheiro de cinzas e desespero.")
-    slow_print("Você não conhece aquele mundo. Mas aquele mundo está prestes a conhecer você.\n")
+    layout.imprimir_lento(
+        "Você termina de erguer o túmulo de pedras para Kazunari.\n"
+        "O vento sopra da base da montanha, trazendo o cheiro de cinzas e desespero.\n"
+        "Você não conhece aquele mundo. Mas aquele mundo está prestes a conhecer você."
+    )
     
-    nome_input = input("Como você se chama, último herdeiro do clã Shiro? (Aperte Enter para usar 'Ishido'): ").strip()
+    nome_input = input("\nComo você se chama, último herdeiro do clã Shiro? (Aperte Enter para usar 'Ishido'): ").strip()
     if nome_input == "":
         jogador["nome"] = "Ishido"
     else:
         jogador["nome"] = nome_input
 
-    slow_print(f"\nLevante-se, {jogador['nome']}.")
+    layout.imprimir_lento(f"\nLevante-se, {jogador['nome']}.")
     
     # Atribuição dos dados rolados para o dicionário do jogador
     novos_atributos = rolar_atributos()
     jogador.update(novos_atributos)
 
-    slow_print(f"\nCom a Kagekiri embainhada, {jogador['nome']} dá o primeiro passo rumo à descida da Colina Lótus.")
-    slow_print("A caçada a Kuroi Shin'en começou.\n")
+    layout.imprimir_lento(f"\nCom a Kagekiri embainhada, {jogador['nome']} dá o primeiro passo rumo à descida da Colina Lótus.")
+    layout.imprimir_lento("A caçada a Kuroi Shin'en começou.")
     
     return jogador

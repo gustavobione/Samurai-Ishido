@@ -1,12 +1,7 @@
 # capitulo_3.py
 import time
 import random
-
-def slow_print(texto, atraso=0.03):
-    for char in texto:
-        print(char, end="", flush=True)
-        time.sleep(atraso)
-    print("\n")
+import layout
 
 def rolar_teste(atributo_nome, valor_atributo, dificuldade=20):
     d20 = random.randint(1, 20)
@@ -18,7 +13,7 @@ def rolar_teste(atributo_nome, valor_atributo, dificuldade=20):
     return total >= dificuldade
 
 def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
-    slow_print(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
+    layout.imprimir_lento(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
     
     bonus_armadura = jogador.get("bonus_defesa", 0)
     mod_defesa = (jogador.get("destreza", 10) + jogador.get("kenjutsu", 10)) // 4
@@ -26,7 +21,7 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
     bonus_ataque_inimigo = max_dano // 2
     
     while hp_inimigo > 0 and jogador["vitalidade"] > 0:
-        print("\n" + "-"*50)
+        layout.divisoria()
         max_hp = jogador.get("max_vitalidade", jogador["vitalidade"])
         print(f"♥ Seu HP: {jogador['vitalidade']}/{max_hp}  |  🛡️ Sua Defesa: {defesa_jogador}  |  💀 HP do Inimigo: {hp_inimigo}")
         
@@ -42,31 +37,31 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
         
         if acao == "1":
             if jogador.get("espada_quebrada", False):
-                slow_print("> Sua espada está QUEBRADA! Você acerta um golpe contundente fraco!")
+                layout.imprimir_lento("> Sua espada está QUEBRADA! Você acerta um golpe contundente fraco!")
                 dano_jogador = random.randint(1, 3) # Dano pífio
             else:
                 bonus_arma = jogador.get("bonus_dano_arma", 0)
                 dano_jogador = random.randint(3, 10) + (jogador.get("kenjutsu", 10) // 3) + bonus_arma
                 
-            slow_print(f"> Causou {dano_jogador} de dano ao inimigo.")
+            layout.imprimir_lento(f"> Causou {dano_jogador} de dano ao inimigo.")
             hp_inimigo -= dano_jogador
             
             if hp_inimigo <= 0:
-                slow_print(f"\nCom muito esforço, você derrotou o {nome_inimigo}!")
+                layout.imprimir_lento(f"\nCom muito esforço, você derrotou o {nome_inimigo}!")
                 return "vitoria"
         
         elif acao == "2":
             if rolar_teste("destreza", jogador.get("destreza", 10), 20):
-                slow_print("> Você usa o ambiente e recua para as sombras. Fuga bem-sucedida!")
+                layout.imprimir_lento("> Você usa o ambiente e recua para as sombras. Fuga bem-sucedida!")
                 return "fuga"
             else:
-                slow_print("> Você tenta recuar, mas o inimigo bloqueia seu caminho!")
+                layout.imprimir_lento("> Você tenta recuar, mas o inimigo bloqueia seu caminho!")
         else:
-            slow_print("> Ação inválida! Você hesita e perde a iniciativa!")
+            layout.imprimir_lento("> Ação inválida! Você hesita e perde a iniciativa!")
             
         # Turno do inimigo
         if hp_inimigo > 0:
-            slow_print(f"\n[Turno do Inimigo: {nome_inimigo}]")
+            layout.imprimir_lento(f"\n[Turno do Inimigo: {nome_inimigo}]")
             dado_ataque = random.randint(1, 20)
             total_ataque = dado_ataque + bonus_ataque_inimigo
             time.sleep(0.5)
@@ -75,13 +70,13 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
             
             if total_ataque >= defesa_jogador:
                 dano_sofrido = random.randint(min_dano, max_dano)
-                slow_print(f"> 💥 O {nome_inimigo} rompe sua guarda e acerta o golpe! Você perde {dano_sofrido} de HP.")
+                layout.imprimir_lento(f"> 💥 O {nome_inimigo} rompe sua guarda e acerta o golpe! Você perde {dano_sofrido} de HP.")
                 jogador["vitalidade"] -= dano_sofrido
             else:
                 if dado_ataque <= 5:
-                    slow_print(f"> 💨 O {nome_inimigo} erra grosseiramente o alvo. Você sai ileso!")
+                    layout.imprimir_lento(f"> 💨 O {nome_inimigo} erra grosseiramente o alvo. Você sai ileso!")
                 else:
-                    slow_print(f"> ⚔️ O {nome_inimigo} ataca, mas você desvia no último segundo!")
+                    layout.imprimir_lento(f"> ⚔️ O {nome_inimigo} ataca, mas você desvia no último segundo!")
             
     if jogador["vitalidade"] <= 0: return "morte"
 
@@ -90,12 +85,12 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
 # ROTA 1: AS MINAS INFERIORES
 # ==========================================
 def cena_minas(jogador):
-    print("\n" + "="*60)
-    slow_print("          AS MINAS DE ENXOFRE E O PESO DO AÇO")
-    print("="*60 + "\n")
+    layout.cabecalho("AS MINAS DE ENXOFRE E O PESO DO AÇO")
 
-    slow_print("Você desce para as Minas Inferiores. O calor é nauseante, e o eco de picaretas soa como um lamento.")
-    slow_print("Dezenas de humanos escravizados quebram pedras enquanto Magistrados de Ferro os chicoteiam.")
+    layout.imprimir_lento(
+        "Você desce para as Minas Inferiores. O calor é nauseante, e o eco de picaretas soa como um lamento.\n"
+        "Dezenas de humanos escravizados quebram pedras enquanto Magistrados de Ferro os chicoteiam."
+    )
     
     print("\nUm dos guardas chuta um ancião exausto. O que você faz?")
     print("1 - [Kenjutsu] Iniciar um massacre sangrento para libertar os escravos.")
@@ -106,31 +101,31 @@ def cena_minas(jogador):
 
     if escolha == "1":
         jogador["honra"] += 2
-        slow_print("\nO brilho da Kagekiri traz esperança aos escravos!")
+        layout.imprimir_lento("\nO brilho da Kagekiri traz esperança aos escravos!")
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 22):
-            slow_print("SUCESSO! Você perfura as frestas das armaduras. Três caem mortos, o resto foge!")
+            layout.imprimir_lento("SUCESSO! Você perfura as frestas das armaduras. Três caem mortos, o resto foge!")
         else:
-            slow_print("FALHA! A armadura deles é grossa. Um guarda te joga no chão!")
+            layout.imprimir_lento("FALHA! A armadura deles é grossa. Um guarda te joga no chão!")
             iniciar_combate(jogador, "Pelotão de Ferro", hp_inimigo=40, min_dano=3, max_dano=7)
     elif escolha == "2":
         jogador["honra"] -= 1
-        slow_print("\nVocê engole sua empatia e avança furtivamente após jogar as pedras.")
+        layout.imprimir_lento("\nVocê engole sua empatia e avança furtivamente após jogar as pedras.")
         if not rolar_teste("destreza", jogador["destreza"], 20):
-            slow_print("FALHA! Você pisa em uma corrente. Um cão de guarda corre na sua direção!")
+            layout.imprimir_lento("FALHA! Você pisa em uma corrente. Um cão de guarda corre na sua direção!")
             iniciar_combate(jogador, "Cão das Forjas", hp_inimigo=30, min_dano=2, max_dano=6)
     else:
-        slow_print("\nVocê quebra a válvula do cano de gás vulcânico.")
+        layout.imprimir_lento("\nVocê quebra a válvula do cano de gás vulcânico.")
         if rolar_teste("conhecimento", jogador["conhecimento"], 21):
-            slow_print("SUCESSO! O gás asfixia os guardas. Os escravos fogem em segurança.")
+            layout.imprimir_lento("SUCESSO! O gás asfixia os guardas. Os escravos fogem em segurança.")
         else:
-            slow_print("FALHA! O cano explode na sua cara! Você inala fumaça tóxica.")
+            layout.imprimir_lento("FALHA! O cano explode na sua cara! Você inala fumaça tóxica.")
             jogador["vitalidade"] -= 5
             iniciar_combate(jogador, "Magistrado Asfixiado", hp_inimigo=35, min_dano=3, max_dano=7)
 
     if jogador["vitalidade"] <= 0: return jogador
     
-    print("\n" + "-"*50)
-    slow_print(
+    layout.divisoria()
+    layout.imprimir_lento(
         "Em um canto da mina, você encontra os restos de um velho ferreiro e recolhe uma de "
         "suas engrenagens para a Kagekiri, adaptando o balanço da arma."
     )
@@ -144,12 +139,12 @@ def cena_minas(jogador):
 # ROTA 2: A FORJA PRINCIPAL
 # ==========================================
 def cena_forja(jogador):
-    print("\n" + "="*60)
-    slow_print("          OS PORTÕES PRINCIPAIS E O DEMÔNIO DA BIGORNA")
-    print("="*60 + "\n")
+    layout.cabecalho("OS PORTÕES PRINCIPAIS E O DEMÔNIO DA BIGORNA")
 
-    slow_print("Você invade a Forja Principal. Rios de magma iluminam um Kama-Oni gigante bebendo ferro derretido.")
-    slow_print("Ele sorri com dentes oxidados: 'A lâmina do herói vai derreter na minha bigorna!'")
+    layout.imprimir_lento(
+        "Você invade a Forja Principal. Rios de magma iluminam um Kama-Oni gigante bebendo ferro derretido.\n"
+        "Ele sorri com dentes oxidados: 'A lâmina do herói vai derreter na minha bigorna!'"
+    )
 
     print("\nComo você passa pelo gerente da escravidão?")
     print("1 - [Kenjutsu] Desafiá-lo abertamente para um duelo mortal.")
@@ -160,22 +155,22 @@ def cena_forja(jogador):
     if escolha == "1":
         jogador["honra"] += 3
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 24):
-            slow_print("SUCESSO! Você desliza a lâmina pelo martelo dele e corta seus dedos. Ele recua sangrando!")
+            layout.imprimir_lento("SUCESSO! Você desliza a lâmina pelo martelo dele e corta seus dedos. Ele recua sangrando!")
             iniciar_combate(jogador, "Kama-Oni (Ferido)", hp_inimigo=30, min_dano=2, max_dano=6)
         else:
-            slow_print("FALHA! A martelada treme a montanha e o arremessa longe!")
+            layout.imprimir_lento("FALHA! A martelada treme a montanha e o arremessa longe!")
             iniciar_combate(jogador, "Kama-Oni Bruto", hp_inimigo=50, min_dano=5, max_dano=10)
     else:
         if rolar_teste("destreza", jogador["destreza"], 23):
-            slow_print("SUCESSO! Toneladas de magma caem sobre ele. Sua casca endurece e ele morre paralisado em pedra!")
+            layout.imprimir_lento("SUCESSO! Toneladas de magma caem sobre ele. Sua casca endurece e ele morre paralisado em pedra!")
         else:
-            slow_print("FALHA! Você escorrega da corrente e queima o braço no magma (-5 HP)!")
+            layout.imprimir_lento("FALHA! Você escorrega da corrente e queima o braço no magma (-5 HP)!")
             jogador["vitalidade"] -= 5
             iniciar_combate(jogador, "Kama-Oni Furioso", hp_inimigo=50, min_dano=5, max_dano=10)
 
     if jogador["vitalidade"] <= 0: return jogador
 
-    slow_print("\nNa base da forja do Oni derrotado, você acha lingotes raros e raspa sua própria Kagekiri neles.")
+    layout.imprimir_lento("\nNa base da forja do Oni derrotado, você acha lingotes raros e raspa sua própria Kagekiri neles.")
     jogador["kenjutsu"] = jogador.get("kenjutsu", 10) + 1
     print("[Melhoria: Fio Afiado (+1 Kenjutsu)]")
 
@@ -186,12 +181,12 @@ def cena_forja(jogador):
 # ROTA 3: A TRILHA DA FUMAÇA
 # ==========================================
 def cena_fumaca(jogador):
-    print("\n" + "="*60)
-    slow_print("          OS DUTOS DE FUMAÇA E A ESCALADA MORTAL")
-    print("="*60 + "\n")
+    layout.cabecalho("OS DUTOS DE FUMAÇA E A ESCALADA MORTAL")
 
-    slow_print("Você ignora o chão e escala as chaminés vulcânicas verticais, invisível para as patrulhas.")
-    slow_print("Subitamente, a fumaça cria olhos brancos. Um Enenra (Yokai de Fumaça) tenta sufocá-lo!")
+    layout.imprimir_lento(
+        "Você ignora o chão e escala as chaminés vulcânicas verticais, invisível para as patrulhas.\n"
+        "Subitamente, a fumaça cria olhos brancos. Um Enenra (Yokai de Fumaça) tenta sufocá-lo!"
+    )
 
     print("\nO ar está acabando. O monstro é intangível. Como agir?")
     print("1 - [Conhecimento] Fazer um selo de vento Onmyodo para dissipá-lo.")
@@ -201,15 +196,15 @@ def cena_fumaca(jogador):
 
     if escolha == "1":
         if rolar_teste("conhecimento", jogador["conhecimento"], 22):
-            slow_print("SUCESSO! O mantra expulsa o demônio do duto. O caminho está limpo.")
+            layout.imprimir_lento("SUCESSO! O mantra expulsa o demônio do duto. O caminho está limpo.")
         else:
-            slow_print("FALHA! A fumaça entra nos pulmões. Você tosse sangue (-5 HP)!")
+            layout.imprimir_lento("FALHA! A fumaça entra nos pulmões. Você tosse sangue (-5 HP)!")
             jogador["vitalidade"] -= 5
     else:
         if rolar_teste("destreza", jogador["destreza"], 23):
-            slow_print("SUCESSO! A mini explosão queima o monstro e o impulsiona para a saída!")
+            layout.imprimir_lento("SUCESSO! A mini explosão queima o monstro e o impulsiona para a saída!")
         else:
-            slow_print("FALHA! A explosão queima suas roupas e atira você contra a parede (-6 HP).")
+            layout.imprimir_lento("FALHA! A explosão queima suas roupas e atira você contra a parede (-6 HP).")
             jogador["vitalidade"] -= 6
 
     if jogador["vitalidade"] <= 0: return jogador
@@ -222,15 +217,11 @@ def cena_fumaca(jogador):
 def cena_climax(jogador):
     if jogador["vitalidade"] <= 0: return jogador
     
-    print("\n" + "="*60)
-    slow_print("          O CORAÇÃO DO VULCÃO E A NOITE ESCURA")
-    print("="*60 + "\n")
+    layout.cabecalho("O CORAÇÃO DO VULCÃO E A NOITE ESCURA")
 
-    slow_print(
+    layout.imprimir_lento(
         "Independente do caminho tomado, todas as passagens de saída o forçam a cruzar a "
-        "câmara central onde o magma é drenado da montanha."
-    )
-    slow_print(
+        "câmara central onde o magma é drenado da montanha.\n"
         "Lá está o General de Magma, o guardião mestre das Forjas. Seu corpo é feito de rocha derretida e "
         "ódio humano destilado. Ele ruge, fazendo o chão de pedra tremer, e avança!"
     )
@@ -240,19 +231,13 @@ def cena_climax(jogador):
     if resultado == "morte" or jogador["vitalidade"] <= 0: return jogador
     
     # A QUEDA DA ESPADA
-    print("\n" + "!"*60)
-    slow_print("                    O ESTILHAÇAR DA ESPERANÇA")
-    print("!"*60 + "\n")
+    layout.cabecalho("O ESTILHAÇAR DA ESPERANÇA")
 
-    slow_print(
+    layout.imprimir_lento(
         "O General cai de joelhos, o magma esfriando em seu peito onde você cravou sua espada. "
-        "Ofegante, você puxa a Kagekiri para finalizar o serviço..."
-    )
-    slow_print(
+        "Ofegante, você puxa a Kagekiri para finalizar o serviço...\n"
         "...Mas o aço de meteorito sagrado, acostumado ao frio eterno do Monte Shiro, sofreu "
-        "um estresse térmico fatal ao mergulhar no sangue demoníaco a milhares de graus."
-    )
-    slow_print(
+        "um estresse térmico fatal ao mergulhar no sangue demoníaco a milhares de graus.\n"
         "Com um som agudo e ensurdecedor, a Kagekiri se parte. A lâmina lendária explode "
         "em vários estilhaços brilhantes. O General vira cinzas, mas o preço foi incalculável. "
         "Sua arma, a herança do seu mestre, está destruída."
@@ -260,8 +245,8 @@ def cena_climax(jogador):
     
     jogador["espada_quebrada"] = True
     
-    slow_print(
-        "\nOs alarmes do vulcão começam a soar. O estrondo do monstro caindo atrai Guardas Negros "
+    layout.imprimir_lento(
+        "Os alarmes do vulcão começam a soar. O estrondo do monstro caindo atrai Guardas Negros "
         "para o local. Você olha para o cabo inútil em sua mão. Sem sua espada, você é apenas um alvo."
     )
     
@@ -272,13 +257,13 @@ def cena_climax(jogador):
     
     escolha_fuga = input("\nEscolha (1 ou 2): ").strip()
     
-    slow_print("\nO desespero dita suas ações. O coração bate no pescoço...")
+    layout.imprimir_lento("O desespero dita suas ações. O coração bate no pescoço...")
     if escolha_fuga == "1" and rolar_teste("destreza", jogador["destreza"], 22):
-        slow_print("SUCESSO! Você despenca pelas tubulações quentes no escuro, fugindo da morte certa.")
+        layout.imprimir_lento("SUCESSO! Você despenca pelas tubulações quentes no escuro, fugindo da morte certa.")
     elif escolha_fuga == "2" and rolar_teste("conhecimento", jogador["conhecimento"], 22):
-        slow_print("SUCESSO! Engolindo seu orgulho, você rola na fuligem e finge ser um cadáver jogado aos esgotos. Você escapa invisível.")
+        layout.imprimir_lento("SUCESSO! Engolindo seu orgulho, você rola na fuligem e finge ser um cadáver jogado aos esgotos. Você escapa invisível.")
     else:
-        slow_print("FALHA! Durante a fuga caótica, lanças e brasas encontram sua carne! Você tropeça e rola encosta abaixo.")
+        layout.imprimir_lento("FALHA! Durante a fuga caótica, lanças e brasas encontram sua carne! Você tropeça e rola encosta abaixo.")
         dano = random.randint(8, 15)
         jogador["vitalidade"] -= dano
         print(f"Você perdeu {dano} de Vitalidade e capota para fora das fronteiras de Tetsu.")
@@ -286,21 +271,15 @@ def cena_climax(jogador):
     if jogador["vitalidade"] <= 0: return jogador
 
     # A MEMÓRIA DA ESPERANÇA
-    print("\n" + "-"*50)
-    slow_print(
+    layout.divisoria()
+    layout.imprimir_lento(
         "Mutilado, queimado e com as mãos tremendo em volta de um cabo de espada quebrado, "
-        "você desaba nas bordas de um novo território."
-    )
-    slow_print(
+        "você desaba nas bordas de um novo território.\n"
         "O calor sufocante fica para trás. Você sente lama fria sob seu rosto e o cheiro "
-        "de água estagnada e arrozais infinitos. A Província de Mizu."
-    )
-    slow_print(
+        "de água estagnada e arrozais infinitos. A Província de Mizu.\n"
         "A escuridão ameaça levar sua consciência, mas uma memória antiga de Kazunari o mantém "
         "acordado: 'Se a lâmina falhar, Ishido, busque as águas rasas de Mizu. O maior forjador do mundo, "
-        "Mestre Kajiya, foi exilado lá há trinta anos. Se ele ainda viver, apenas ele pode moldar o meteorito.'"
-    )
-    slow_print(
+        "Mestre Kajiya, foi exilado lá há trinta anos. Se ele ainda viver, apenas ele pode moldar o meteorito.'\n"
         "Você aperta os estilhaços no bolso. A caçada ao mago Kuroi terá que esperar. "
         "Agora, sua única missão é sobreviver à úmida província sem poder lutar."
     )
@@ -311,11 +290,9 @@ def cena_climax(jogador):
 # GESTOR DO CAPÍTULO 3
 # ==========================================
 def jogar(jogador):
-    print("\n" + "=" * 75)
-    slow_print("                   CAPÍTULO 3: AS FORJAS DA DESONRA", 0.05)
-    print("=" * 75)
+    layout.cabecalho("CAPÍTULO 3: AS FORJAS DA DESONRA")
 
-    slow_print("\nVocê caminha sob a abóboda vulcânica da Província de Tetsu. Diante de você, 3 entradas.")
+    layout.imprimir_lento("Você caminha sob a abóboda vulcânica da Província de Tetsu. Diante de você, 3 entradas.")
 
     print("\nOpções de Infiltração:")
     print("1 - As Minas Inferiores (Foco: Passar sorrateiramente pelos escravos e sabotagem).")

@@ -1,12 +1,7 @@
 # capitulo_2.py
 import time
 import random
-
-def slow_print(texto, atraso=0.03):
-    for char in texto:
-        print(char, end="", flush=True)
-        time.sleep(atraso)
-    print("\n")
+import layout
 
 def rolar_teste(atributo_nome, valor_atributo, dificuldade=25):
     d20 = random.randint(1, 20)
@@ -19,7 +14,7 @@ def rolar_teste(atributo_nome, valor_atributo, dificuldade=25):
 
 def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
     """Inicia um loop de combate simples com sistema de Esquiva/Defesa."""
-    slow_print(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
+    layout.imprimir_lento(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
     
     # Calcula a sua Defesa (Base 10 + modificador de agilidade e bloqueio)
     mod_defesa = (jogador.get("destreza", 10) + jogador.get("kenjutsu", 10)) // 4
@@ -29,7 +24,7 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
     bonus_ataque_inimigo = max_dano // 2
     
     while hp_inimigo > 0 and jogador["vitalidade"] > 0:
-        print("\n" + "-"*50)
+        layout.divisoria()
         max_hp = jogador.get("max_vitalidade", jogador["vitalidade"])
         print(f"♥ Seu HP: {jogador['vitalidade']}/{max_hp}  |  🛡️ Sua Defesa: {defesa_jogador}  |  💀 HP do Inimigo: {hp_inimigo}")
         print("1 - [Atacar] Desferir golpe com a Kagekiri.")
@@ -39,27 +34,27 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
         
         if acao == "1":
             dano_jogador = random.randint(3, 10) + (jogador.get("kenjutsu", 10) // 3)
-            slow_print(f"> Você avança e corta o inimigo! Causou {dano_jogador} de dano.")
+            layout.imprimir_lento(f"> Você avança e corta o inimigo! Causou {dano_jogador} de dano.")
             hp_inimigo -= dano_jogador
             
             if hp_inimigo <= 0:
-                slow_print(f"\nCom um golpe final perfeito, você derrotou o {nome_inimigo}!")
+                layout.imprimir_lento(f"\nCom um golpe final perfeito, você derrotou o {nome_inimigo}!")
                 return "vitoria"
         
         elif acao == "2":
             if rolar_teste("destreza", jogador.get("destreza", 10), 22):
-                slow_print("> Você joga poeira nos olhos do inimigo e recua para as sombras. Fuga bem-sucedida!")
+                layout.imprimir_lento("> Você joga poeira nos olhos do inimigo e recua para as sombras. Fuga bem-sucedida!")
                 return "fuga"
             else:
-                slow_print("> Você tenta recuar, mas o inimigo bloqueia seu caminho!")
+                layout.imprimir_lento("> Você tenta recuar, mas o inimigo bloqueia seu caminho!")
         else:
-            slow_print("> Ação inválida! Você hesita e perde a iniciativa!")
+            layout.imprimir_lento("> Ação inválida! Você hesita e perde a iniciativa!")
             
         # ==========================================
         # TURNO DO INIMIGO (Rolagem de Acerto)
         # ==========================================
         if hp_inimigo > 0:
-            slow_print(f"\n[Turno do Inimigo: {nome_inimigo}]")
+            layout.imprimir_lento(f"\n[Turno do Inimigo: {nome_inimigo}]")
             dado_ataque = random.randint(1, 20)
             total_ataque = dado_ataque + bonus_ataque_inimigo
             
@@ -69,14 +64,14 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
             
             if total_ataque >= defesa_jogador:
                 dano_sofrido = random.randint(min_dano, max_dano)
-                slow_print(f"> 💥 O {nome_inimigo} rompe sua guarda e acerta o golpe! Você perde {dano_sofrido} de HP.")
+                layout.imprimir_lento(f"> 💥 O {nome_inimigo} rompe sua guarda e acerta o golpe! Você perde {dano_sofrido} de HP.")
                 jogador["vitalidade"] -= dano_sofrido
             else:
                 # Narrativa dinâmica para o erro do inimigo
                 if dado_ataque <= 5:
-                    slow_print(f"> 💨 O {nome_inimigo} ataca, mas erra grosseiramente o alvo. Você sai ileso!")
+                    layout.imprimir_lento(f"> 💨 O {nome_inimigo} ataca, mas erra grosseiramente o alvo. Você sai ileso!")
                 else:
-                    slow_print(f"> ⚔️ O {nome_inimigo} ataca, mas você apara com a Kagekiri e desvia o golpe no último segundo!")
+                    layout.imprimir_lento(f"> ⚔️ O {nome_inimigo} ataca, mas você apara com a Kagekiri e desvia o golpe no último segundo!")
             
     if jogador["vitalidade"] <= 0:
         return "morte"
@@ -85,21 +80,17 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
 # ROTA 1: FLORESTA (CHÃO) - A LAMA E O SANGUE
 # ==========================================
 def cena_floresta_chao(jogador):
-    print("\n" + "="*60)
-    slow_print("          A FLORESTA MURMURANTE - OS CAMINHOS DE LAMA")
-    print("="*60 + "\n")
+    layout.cabecalho("A FLORESTA MURMURANTE - OS CAMINHOS DE LAMA")
 
-    slow_print(
+    layout.imprimir_lento(
         "Deixando a Vila de Kiku para trás, você pisa no solo lamacento da Floresta Murmurante. "
-        "As árvores aqui são titânicas, com raízes grossas como muralhas que se contorcem sobre a terra úmida."
-    )
-    slow_print(
+        "As árvores aqui são titânicas, com raízes grossas como muralhas que se contorcem sobre a terra úmida.\n"
         "A neblina no chão é densa. Kazunari costumava dizer que esta floresta era o pulmão de Takenoko, "
         "mas agora, cada farfalhar de folhas soa como um sussurro de agonia."
     )
     
     # ---------------- ENCONTRO 1: A PONTE DE OSSOS ----------------
-    slow_print(
+    layout.imprimir_lento(
         "A névoa se dissipa o suficiente para revelar uma ponte pênsil feita de cordas podres e... ossos. "
         "Do outro lado, três Ronins montam guarda. Eles vestem armaduras enferrujadas e ostentam marcas "
         "de corrupção negra pulsando no pescoço. Venderam suas almas a Kuroi Shin'en."
@@ -113,52 +104,46 @@ def cena_floresta_chao(jogador):
     escolha = input("\nEscolha (1, 2 ou 3): ").strip()
 
     if escolha == "1":
-        slow_print("\nVocê pisa firme na ponte de ossos. Os Ronins sacam suas lâminas com sorrisos macabros.")
+        layout.imprimir_lento("\nVocê pisa firme na ponte de ossos. Os Ronins sacam suas lâminas com sorrisos macabros.")
         jogador["honra"] += 2
         print("[Honra +2] A coragem de um duelo aberto.")
 
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 22):
-            slow_print("SUCESSO! Você é uma força da natureza. Sua lâmina apara os golpes e decepa cabeças em um giro de pura arte marcial.")
+            layout.imprimir_lento("SUCESSO! Você é uma força da natureza. Sua lâmina apara os golpes e decepa cabeças em um giro de pura arte marcial.")
         else:
-            slow_print("FALHA! A ponte balança traiçoeiramente. Eles cercam você!")
+            layout.imprimir_lento("FALHA! A ponte balança traiçoeiramente. Eles cercam você!")
             resultado = iniciar_combate(jogador, "Trio de Ronins", hp_inimigo=30, min_dano=2, max_dano=5)
 
     elif escolha == "2":
-        slow_print("\nVocê embainha a espada e escala a madeira podre até o dossel escuro.")
+        layout.imprimir_lento("\nVocê embainha a espada e escala a madeira podre até o dossel escuro.")
         if rolar_teste("destreza", jogador["destreza"], 21):
-            slow_print("SUCESSO! Como uma gota de chuva silenciosa, você cai cortando a garganta dos inimigos. Um assassinato sem alarde.")
+            layout.imprimir_lento("SUCESSO! Como uma gota de chuva silenciosa, você cai cortando a garganta dos inimigos. Um assassinato sem alarde.")
         else:
-            slow_print("FALHA! Um galho quebra. Você cai no meio do acampamento e eles avançam!")
+            layout.imprimir_lento("FALHA! Um galho quebra. Você cai no meio do acampamento e eles avançam!")
             resultado = iniciar_combate(jogador, "Acampamento Ronin", hp_inimigo=35, min_dano=2, max_dano=4)
 
     elif escolha == "3":
-        slow_print("\n'Vocês desonraram o aço de Takenoko. Limpem sua vergonha ou eu apagarei suas existências!'")
+        layout.imprimir_lento("\n'Vocês desonraram o aço de Takenoko. Limpem sua vergonha ou eu apagarei suas existências!'")
         if rolar_teste("conhecimento", jogador["conhecimento"] + (jogador["honra"]//2), 24):
-            slow_print("SUCESSO! O peso da desonra esmaga a mente de dois deles, que cravam as espadas no ventre. O terceiro foge gritando.")
+            layout.imprimir_lento("SUCESSO! O peso da desonra esmaga a mente de dois deles, que cravam as espadas no ventre. O terceiro foge gritando.")
             jogador["honra"] += 3
             print("[Honra +3] A verdadeira força de um samurai está em seu espírito.")
         else:
-            slow_print("FALHA! 'A honra morreu com o Xogum!', riem eles, sacando as espadas e avançando!")
+            layout.imprimir_lento("FALHA! 'A honra morreu com o Xogum!', riem eles, sacando as espadas e avançando!")
             jogador["honra"] -= 1
             resultado = iniciar_combate(jogador, "Ronins Hereges", hp_inimigo=35, min_dano=3, max_dano=6)
 
     if jogador["vitalidade"] <= 0: return jogador
 
     # ---------------- ENCONTRO 2: O DILEMA DO PÂNTANO ----------------
-    print("\n" + "-"*50)
-    slow_print(
+    layout.divisoria()
+    layout.imprimir_lento(
         "Com a ponte cruzada, a floresta se transforma em um pântano sufocante. "
-        "O som de chicotes quebra o silêncio, acompanhado de gemidos humanos."
-    )
-    slow_print(
+        "O som de chicotes quebra o silêncio, acompanhado de gemidos humanos.\n"
         "Avançando furtivamente, você avista uma cena terrível: dezenas de camponeses esquálidos, submersos "
-        "na água suja até a cintura, estão sendo forçados a extrair seiva negra das raízes das árvores."
-    )
-    slow_print(
+        "na água suja até a cintura, estão sendo forçados a extrair seiva negra das raízes das árvores.\n"
         "O feitor não é humano. É um Kawa-no-Oni, um Kappa colossal e corrompido, com o casco coberto de espetos. "
-        "Sua tigela sagrada no topo da cabeça borbulha com uma água ácida e escura."
-    )
-    slow_print(
+        "Sua tigela sagrada no topo da cabeça borbulha com uma água ácida e escura.\n"
         "Atacar a fera seria arriscado e chamaria a atenção de patrulhas, mas abandonar os escravos é trair "
         "tudo o que Kazunari lhe ensinou."
     )
@@ -171,29 +156,29 @@ def cena_floresta_chao(jogador):
     escolha_pantano = input("\nEscolha (1, 2 ou 3): ").strip()
 
     if escolha_pantano == "1":
-        slow_print("\nO grito das vítimas ecoa na sua lâmina. Você salta no pântano, a água suja batendo nos joelhos.")
+        layout.imprimir_lento("\nO grito das vítimas ecoa na sua lâmina. Você salta no pântano, a água suja batendo nos joelhos.")
         jogador["honra"] += 3
         print("[Honra +3] Você é a lenda que o povo esperava.")
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 22):
-            slow_print("SUCESSO! O primeiro ataque divide o casco do monstro. Ele grita, a água mágica vaza de sua cabeça e ele tomba enfraquecido antes de morrer.")
+            layout.imprimir_lento("SUCESSO! O primeiro ataque divide o casco do monstro. Ele grita, a água mágica vaza de sua cabeça e ele tomba enfraquecido antes de morrer.")
         else:
-            slow_print("FALHA! A lama restringe seus movimentos. O chicote do monstro o atinge e a batalha começa!")
+            layout.imprimir_lento("FALHA! A lama restringe seus movimentos. O chicote do monstro o atinge e a batalha começa!")
             iniciar_combate(jogador, "Kappa Feitor", hp_inimigo=45, min_dano=4, max_dano=8)
 
     elif escolha_pantano == "2":
-        slow_print("\nVocê fecha os olhos com força, afoga a empatia no fundo da alma e rasteja pelas margens distantes.")
+        layout.imprimir_lento("\nVocê fecha os olhos com força, afoga a empatia no fundo da alma e rasteja pelas margens distantes.")
         jogador["honra"] -= 4
         print("[Honra -4] Você poupou seu corpo, mas mutilou seu espírito.")
         if rolar_teste("destreza", jogador["destreza"], 20):
-            slow_print("SUCESSO! Você passa despercebido, deixando os gritos agonizantes para trás.")
+            layout.imprimir_lento("SUCESSO! Você passa despercebido, deixando os gritos agonizantes para trás.")
         else:
-            slow_print("FALHA! A água pantanosa trai seus passos. O monstro fareja seu sangue e avança rugindo contra você nas sombras!")
+            layout.imprimir_lento("FALHA! A água pantanosa trai seus passos. O monstro fareja seu sangue e avança rugindo contra você nas sombras!")
             iniciar_combate(jogador, "Kappa Caçador", hp_inimigo=40, min_dano=3, max_dano=7)
 
     elif escolha_pantano == "3":
-        slow_print("\nVocê sai das sombras embainhando a espada. O monstro ergue o chicote, mas você faz uma reverência samurai profunda.")
+        layout.imprimir_lento("\nVocê sai das sombras embainhando a espada. O monstro ergue o chicote, mas você faz uma reverência samurai profunda.")
         if rolar_teste("conhecimento", jogador["conhecimento"], 21):
-            slow_print(
+            layout.imprimir_lento(
                 "SUCESSO! O instinto folclórico domina a feitiçaria. O Kappa, compelido pela magia milenar da etiqueta, "
                 "curva-se de volta. A água negra de sua cabeça derrama no pântano. Ele perde toda a força e cai no chão, "
                 "agonizando sem seu poder mágico. Os camponeses o espancam até a morte com as correntes."
@@ -201,7 +186,7 @@ def cena_floresta_chao(jogador):
             jogador["honra"] += 1
             print("[Honra +1] O sábio vence a guerra sem desembainhar a espada.")
         else:
-            slow_print(
+            layout.imprimir_lento(
                 "FALHA! A corrupção em Kuroi destruiu o folclore. 'Etiqueta não salva carne macia!', ri o monstro, chicoteando seu rosto!"
             )
             iniciar_combate(jogador, "Kappa Insano", hp_inimigo=45, min_dano=4, max_dano=8)
@@ -212,17 +197,15 @@ def cena_floresta_chao(jogador):
 # ROTA 2: FLORESTA (COPAS) - AS ILUSÕES E O VOO
 # ==========================================
 def cena_floresta_copas(jogador):
-    print("\n" + "="*60)
-    slow_print("          A FLORESTA MURMURANTE - O DOSSEL DAS ILUSÕES")
-    print("="*60 + "\n")
+    layout.cabecalho("A FLORESTA MURMURANTE - O DOSSEL DAS ILUSÕES")
 
-    slow_print(
+    layout.imprimir_lento(
         "Vindo das Cavernas, você começa sua travessia saltando entre os galhos colossais do topo "
         "da Floresta Murmurante. Lá embaixo, o chão está invisível sob um mar de névoa cinza."
     )
     
     # ---------------- ENCONTRO 1: A ILUSÃO DO MESTRE ----------------
-    slow_print(
+    layout.imprimir_lento(
         "De repente, a neblina sobe. O ar congela. A figura do seu velho mestre Kazunari, com os dois "
         "braços intactos, aparece flutuando sobre o abismo. 'Venha, Ishido. Pise aqui, é seguro.'"
     )
@@ -241,45 +224,43 @@ def cena_floresta_copas(jogador):
     escolha = input("\nEscolha: ").strip()
 
     if escolha == "1":
-        slow_print("\n'Meu mestre pagou o preço por mim com o braço!'")
+        layout.imprimir_lento("\n'Meu mestre pagou o preço por mim com o braço!'")
         if rolar_teste("conhecimento", jogador["conhecimento"] + bonus, 21):
-            slow_print("SUCESSO! Você quebra o feitiço. O falso Kazunari vira fumaça negra, revelando o abismo mortal. Você está a salvo.")
+            layout.imprimir_lento("SUCESSO! Você quebra o feitiço. O falso Kazunari vira fumaça negra, revelando o abismo mortal. Você está a salvo.")
         else:
-            slow_print("FALHA! Você avança na direção dele e cai! Você agarra um cipó no último segundo, caindo em um ninho escuro!")
+            layout.imprimir_lento("FALHA! Você avança na direção dele e cai! Você agarra um cipó no último segundo, caindo em um ninho escuro!")
             iniciar_combate(jogador, "Prole de Jorogumo (Aranha)", hp_inimigo=20, min_dano=2, max_dano=5)
 
     elif escolha == "2":
-        slow_print("\nVocê fecha os olhos e salta guiado pelo som e pela intuição.")
+        layout.imprimir_lento("\nVocê fecha os olhos e salta guiado pelo som e pela intuição.")
         if rolar_teste("destreza", jogador["destreza"] + bonus, 20):
-            slow_print("SUCESSO! Seu salto pousa em um tronco maciço. O fantasma grita e se dissolve.")
+            layout.imprimir_lento("SUCESSO! Seu salto pousa em um tronco maciço. O fantasma grita e se dissolve.")
         else:
-            slow_print("FALHA! Você calcula mal e bate violentamente no tronco, deslizando para uma fenda cheia de bestas do tronco!")
+            layout.imprimir_lento("FALHA! Você calcula mal e bate violentamente no tronco, deslizando para uma fenda cheia de bestas do tronco!")
             iniciar_combate(jogador, "Gárgula de Madeira", hp_inimigo=25, min_dano=3, max_dano=6)
 
     elif escolha == "3" and tem_sino:
-        slow_print("\nVocê balança o sino de bronze. DING.")
-        slow_print("A onda sonora mística despedaça a ilusão como vidro. O Yokai despenca do galho atordoado. Você passa ileso.")
+        layout.imprimir_lento(
+            "\nVocê balança o sino de bronze. DING.\n"
+            "A onda sonora mística despedaça a ilusão como vidro. O Yokai despenca do galho atordoado. Você passa ileso."
+        )
         jogador["honra"] += 1
         print("[Honra +1] Sabedoria milenar purificou o caminho.")
     else:
-        slow_print("Você hesita demais e a ilusão ataca sua mente!")
+        layout.imprimir_lento("Você hesita demais e a ilusão ataca sua mente!")
         jogador["vitalidade"] -= 5
         iniciar_combate(jogador, "Espectro da Saudade", hp_inimigo=25, min_dano=3, max_dano=6)
 
     if jogador["vitalidade"] <= 0: return jogador
 
     # ---------------- ENCONTRO 2: O DILEMA DO TENGU ----------------
-    print("\n" + "-"*50)
-    slow_print(
+    layout.divisoria()
+    layout.imprimir_lento(
         "Avançando pelo dossel recém-limpo da ilusão, você chega a uma clareira suspensa colossal, "
-        "feita de árvores entrelaçadas. Penas negras do tamanho de espadas pontilham o chão de madeira."
-    )
-    slow_print(
+        "feita de árvores entrelaçadas. Penas negras do tamanho de espadas pontilham o chão de madeira.\n"
         "No centro, meditando sobre um santuário de pássaros, está um Daitengu. Ele tem pele vermelha, "
         "um longo nariz demoníaco, e empunha uma Odachi (espada gigante). Pendurada acima do abismo, "
-        "há uma gaiola de bambu com um mensageiro humano machucado."
-    )
-    slow_print(
+        "há uma gaiola de bambu com um mensageiro humano machucado.\n"
         "O Daitengu abre olhos cor de ouro e fala com uma voz que reverbera no seu peito:\n"
         "'O cheiro da linhagem Shiro. Eu não sirvo ao feiticeiro humano Kuroi, mas odeio sua raça indigna. "
         "Vá embora ou prove que o aço de Takenoko ainda não apodreceu.'"
@@ -293,43 +274,43 @@ def cena_floresta_copas(jogador):
     escolha_tengu = input("\nEscolha (1, 2 ou 3): ").strip()
 
     if escolha_tengu == "1":
-        slow_print("\nVocê saca a Kagekiri e entra em postura de combate. O Daitengu sorri e avança com um salto gigantesco.")
+        layout.imprimir_lento("\nVocê saca a Kagekiri e entra em postura de combate. O Daitengu sorri e avança com um salto gigantesco.")
         jogador["honra"] += 3
         print("[Honra +3] Não há recuo para um samurai autêntico.")
         if rolar_teste("kenjutsu", jogador["kenjutsu"], 23):
-            slow_print(
+            layout.imprimir_lento(
                 "SUCESSO! Uma troca de golpes titânica! A sua velocidade de uma-mão sobrepuja a força brutal da Odachi. "
                 "Com um corte relâmpago, você apara o ataque dele e corta sua asa esquerda. Ele ajoelha, rindo com aprovação."
             )
         else:
-            slow_print("FALHA! O poder dele é avassalador. O choque das espadas entorpece seu braço e ele o lança longe!")
+            layout.imprimir_lento("FALHA! O poder dele é avassalador. O choque das espadas entorpece seu braço e ele o lança longe!")
             resultado = iniciar_combate(jogador, "Daitengu Furioso", hp_inimigo=60, min_dano=5, max_dano=10)
-            if resultado == "vitoria": slow_print("O Tengu cai banhado em sangue, reconhecendo seu valor no último suspiro.")
+            if resultado == "vitoria": layout.imprimir_lento("O Tengu cai banhado em sangue, reconhecendo seu valor no último suspiro.")
 
     elif escolha_tengu == "2":
-        slow_print("\nVocê concorda verbalmente, mas usa o vento para mascarar seus passos, deslizando em direção à gaiola.")
+        layout.imprimir_lento("\nVocê concorda verbalmente, mas usa o vento para mascarar seus passos, deslizando em direção à gaiola.")
         jogador["honra"] -= 2
         print("[Honra -2] Táticas desonestas enfurecem a criatura orgulhosa.")
         if rolar_teste("destreza", jogador["destreza"], 24):
-            slow_print(
+            layout.imprimir_lento(
                 "SUCESSO! Suas mãos são mais rápidas que a vista dele. Você corta a corda com a Kagekiri e empurra a gaiola "
                 "para um galho seguro. O Daitengu bate as asas em frustração, mas recua, impressionado com seu estilo fantasmagórico."
             )
         else:
-            slow_print("FALHA! O Tengu ouve o bambu estalar. 'Verme sem honra!', ele grita, lançando um furacão de vento e cortes contra você!")
+            layout.imprimir_lento("FALHA! O Tengu ouve o bambu estalar. 'Verme sem honra!', ele grita, lançando um furacão de vento e cortes contra você!")
             iniciar_combate(jogador, "Daitengu Ofendido", hp_inimigo=65, min_dano=6, max_dano=11)
 
     elif escolha_tengu == "3":
-        slow_print("\nVocê embainha a espada e declama o Haiku Antigo: 'Vento que não corta / Pássaro que não pousa / Aço reconhece aço.'")
+        layout.imprimir_lento("\nVocê embainha a espada e declama o Haiku Antigo: 'Vento que não corta / Pássaro que não pousa / Aço reconhece aço.'")
         if rolar_teste("conhecimento", jogador["conhecimento"], 22):
-            slow_print(
+            layout.imprimir_lento(
                 "SUCESSO! O monstro arregala os olhos. Ele finca a espada no chão e se curva profundamente. "
                 "'Há sabedoria na linhagem Shiro', ele murmura. Ele corta a corda da gaiola com uma lufada de vento e abre passagem para você."
             )
             jogador["honra"] += 2
             print("[Honra +2] Respeitar a cultura das criaturas antigas traz sabedoria e aliados.")
         else:
-            slow_print("FALHA! Você engasga na última sílaba. O Daitengu suspira de decepção. 'Vocês são macacos tentando imitar a grandeza', diz ele, erguendo a lâmina.")
+            layout.imprimir_lento("FALHA! Você engasga na última sílaba. O Daitengu suspira de decepção. 'Vocês são macacos tentando imitar a grandeza', diz ele, erguendo a lâmina.")
             iniciar_combate(jogador, "Daitengu Decepcionado", hp_inimigo=55, min_dano=4, max_dano=9)
 
     return jogador
@@ -351,19 +332,15 @@ def jogar(jogador):
     if jogador["vitalidade"] <= 0: return jogador
     
     # --- TRANSIÇÃO PARA O CAPÍTULO 3 ---
-    print("\n" + "-"*50)
-    slow_print(
-        "Com a poeira e o sangue para trás, a vegetação densa da Floresta Murmurante começa a morrer."
-    )
-    slow_print(
+    layout.divisoria()
+    layout.imprimir_lento(
+        "Com a poeira e o sangue para trás, a vegetação densa da Floresta Murmurante começa a morrer.\n"
         "Avançando mais alguns quilômetros, a terra macia dá lugar a pedras afiadas de basalto escuro. "
         "No horizonte, fumaça vulcânica tinge o céu de um vermelho doentio, e o som constante de "
-        "marteladas em bigornas ecoa como o batimento cardíaco da terra."
-    )
-    slow_print(
+        "marteladas em bigornas ecoa como o batimento cardíaco da terra.\n"
         "Você encontrou os Portões de Ferro Antigo. Esta é a fronteira com a Província de Tetsu, "
-        "outrora o lar dos mestres ferreiros, agora as infames Forjas Escravocratas de Kuroi Shin'en."
+        "outrora o lar dos mestres ferreiros, agora as infames Forjas Escravocratas de Kuroi Shin'en.\n"
+        "A jornada está prestes a ficar mais quente..."
     )
-    slow_print("A jornada está prestes a ficar mais quente...")
     
     return jogador
