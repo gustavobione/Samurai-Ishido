@@ -130,3 +130,27 @@ def evoluir_capitulo_2(jogador):
 
     jogador = menu_evolucao(jogador)
     return jogador
+
+# Coloque isso no seu sistemas.py
+def evoluir_capitulo_3(jogador):
+    print("\n" + "="*60)
+    slow_print("                    O DESCANSO DO GUERREIRO - A QUEDA")
+    print("="*60 + "\n")
+
+    slow_print(
+        "Encharcado pela neblina da Província de Mizu, você mal consegue acender uma fogueira "
+        "com a lenha molhada. Você abre um trapo sujo e alinha os pedaços rachados da Kagekiri "
+        "no chão ao lado do fogo."
+    )
+    slow_print(
+        "A fumaça e o magma das Forjas de Tetsu cobraram seu preço. Pela primeira vez na vida, "
+        "você não tem a proteção da lâmina de seu mestre. O pântano ao seu redor murmura com "
+        "criaturas aquáticas à espreita."
+    )
+    slow_print(
+        "Mas um samurai desarmado ainda é um samurai. O desespero aguça seus sentidos "
+        "como nenhuma vitória jamais fez."
+    )
+
+    jogador = menu_evolucao(jogador)
+    return jogador

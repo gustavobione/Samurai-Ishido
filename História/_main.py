@@ -2,6 +2,7 @@
 import capitulo_0 as prologo
 import capitulo_1
 import capitulo_2
+import capitulo_3
 import sistemas
 
 
@@ -62,7 +63,6 @@ def iniciar_jogo():
     if checar_morte(jogador):
         return
 
-    # Evolução do Capítulo 1 antes de mostrar os status finais
     jogador = sistemas.evoluir_capitulo_1(jogador)
     mostrar_status(jogador)
 
@@ -71,9 +71,17 @@ def iniciar_jogo():
     if checar_morte(jogador):
         return
 
-    # Evolução do Capítulo 2 antes de mostrar os status finais
     jogador = sistemas.evoluir_capitulo_2(jogador)
     mostrar_status(jogador)
+
+    # --- JOGA O CAPÍTULO 3 ---
+    import capitulo_3
+    jogador = capitulo_3.jogar(jogador)
+    if checar_morte(jogador): return
+
+    jogador = sistemas.evoluir_capitulo_3(jogador)
+    mostrar_status(jogador)
+
 
 
 if __name__ == "__main__":
