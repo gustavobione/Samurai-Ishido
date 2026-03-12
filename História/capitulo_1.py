@@ -8,7 +8,7 @@ def slow_print(texto, atraso=0.03):
         time.sleep(atraso)
     print("\n")
 
-def rolar_teste(atributo_nome, valor_atributo, dificuldade=25):
+def rolar_teste(atributo_nome, valor_atributo, dificuldade=20):
     """Rola 1d20 + Atributo para testar o sucesso de uma ação."""
     d20 = random.randint(1, 20)
     total = d20 + valor_atributo
@@ -19,29 +19,35 @@ def rolar_teste(atributo_nome, valor_atributo, dificuldade=25):
     return total >= dificuldade
 
 def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
-    """Inicia um loop de combate simples."""
+    """Inicia um loop de combate simples com sistema de Esquiva/Defesa."""
     slow_print(f"\n⚔️ COMBATE INICIADO: {nome_inimigo.upper()} ⚔️")
     
+    # Calcula a sua Defesa (Base 10 + modificador de agilidade e bloqueio)
+    mod_defesa = (jogador.get("destreza", 10) + jogador.get("kenjutsu", 10)) // 4
+    defesa_jogador = 10 + mod_defesa
+    
+    # O bônus de ataque do inimigo é baseado no quão forte ele bate
+    bonus_ataque_inimigo = max_dano // 2
+    
     while hp_inimigo > 0 and jogador["vitalidade"] > 0:
-        print("\n" + "-"*40)
-        print(f"♥ Seu HP: {jogador['vitalidade']}  |  💀 HP do Inimigo: {hp_inimigo}")
+        print("\n" + "-"*50)
+        max_hp = jogador.get("max_vitalidade", jogador["vitalidade"])
+        print(f"♥ Seu HP: {jogador['vitalidade']}/{max_hp}  |  🛡️ Sua Defesa: {defesa_jogador}  |  💀 HP do Inimigo: {hp_inimigo}")
         print("1 - [Atacar] Desferir golpe com a Kagekiri.")
         print("2 - [Fugir] Tentar escapar (Teste de Destreza).")
         
         acao = input("Ação (1 ou 2): ").strip()
         
         if acao == "1":
-            # Dano do jogador é baseado em um d10 + metade do Kenjutsu
-            dano_jogador = random.randint(3, 10) + (jogador.get("kenjutsu", 10) // 2)
+            dano_jogador = random.randint(3, 10) + (jogador.get("kenjutsu", 10) // 3)
             slow_print(f"> Você avança e corta o inimigo! Causou {dano_jogador} de dano.")
             hp_inimigo -= dano_jogador
             
             if hp_inimigo <= 0:
-                slow_print(f"Com um golpe final perfeito, você derrotou o {nome_inimigo}!")
+                slow_print(f"\nCom um golpe final perfeito, você derrotou o {nome_inimigo}!")
                 return "vitoria"
         
         elif acao == "2":
-            # Tentativa de fuga no meio do combate
             if rolar_teste("destreza", jogador.get("destreza", 10), 22):
                 slow_print("> Você joga poeira nos olhos do inimigo e recua para as sombras. Fuga bem-sucedida!")
                 return "fuga"
@@ -50,11 +56,28 @@ def iniciar_combate(jogador, nome_inimigo, hp_inimigo, min_dano, max_dano):
         else:
             slow_print("> Ação inválida! Você hesita e perde a iniciativa!")
             
-        # Turno do inimigo (se ainda estiver vivo)
+        # ==========================================
+        # TURNO DO INIMIGO (Rolagem de Acerto)
+        # ==========================================
         if hp_inimigo > 0:
-            dano_sofrido = random.randint(min_dano, max_dano)
-            slow_print(f"> O {nome_inimigo} contra-ataca brutalmente! Você perdeu {dano_sofrido} de Vitalidade.")
-            jogador["vitalidade"] -= dano_sofrido
+            slow_print(f"\n[Turno do Inimigo: {nome_inimigo}]")
+            dado_ataque = random.randint(1, 20)
+            total_ataque = dado_ataque + bonus_ataque_inimigo
+            
+            time.sleep(0.5)
+            print(f" 🎲 O inimigo ataca! (Rolou {dado_ataque} + {bonus_ataque_inimigo} = {total_ataque}) vs Sua Defesa ({defesa_jogador})")
+            time.sleep(0.5)
+            
+            if total_ataque >= defesa_jogador:
+                dano_sofrido = random.randint(min_dano, max_dano)
+                slow_print(f"> 💥 O {nome_inimigo} rompe sua guarda e acerta o golpe! Você perde {dano_sofrido} de HP.")
+                jogador["vitalidade"] -= dano_sofrido
+            else:
+                # Narrativa dinâmica para o erro do inimigo
+                if dado_ataque <= 5:
+                    slow_print(f"> 💨 O {nome_inimigo} ataca, mas erra grosseiramente o alvo. Você sai ileso!")
+                else:
+                    slow_print(f"> ⚔️ O {nome_inimigo} ataca, mas você apara com a Kagekiri e desvia o golpe no último segundo!")
             
     if jogador["vitalidade"] <= 0:
         return "morte"
@@ -102,7 +125,7 @@ def cena_estrada(jogador):
         jogador["honra"] += 2
         print("[Honra +2] Um samurai é o escudo dos indefesos.")
 
-        if rolar_teste("kenjutsu", jogador["kenjutsu"], 24):
+        if rolar_teste("kenjutsu", jogador["kenjutsu"], 20):
             slow_print(
                 "SUCESSO! Você é um relâmpago azul na lama negra. O primeiro guarda perde a cabeça antes de piscar. "
                 "O segundo tenta erguer a lança, mas a lâmina de meteorito corta a haste de ferro e o peito dele de uma só vez. "
@@ -112,9 +135,12 @@ def cena_estrada(jogador):
         else:
             slow_print(
                 "FALHA! Sua lâmina corta o primeiro, mas a lama escorregadia trai seus pés. "
-                "Um dos guardas acerta um golpe brutal de alabarda em suas costelas antes de você decapitá-lo! O sobrevivente avança!"
+                "Um dos guardas acerta um golpe contundente nas suas costelas antes de você decapitá-lo! O sobrevivente avança!"
             )
-            resultado = iniciar_combate(jogador, "Guarda de Cinza Restante", hp_inimigo=25, min_dano=4, max_dano=9)
+            dano = random.randint(1, 3)
+            jogador["vitalidade"] -= dano
+            print(f"Você perdeu {dano} de Vitalidade no deslize.")
+            resultado = iniciar_combate(jogador, "Guarda de Cinza Restante", hp_inimigo=15, min_dano=1, max_dano=3)
             if resultado == "vitoria":
                 mercador_salvo = True
 
@@ -123,7 +149,7 @@ def cena_estrada(jogador):
         jogador["honra"] -= 3
         print("[Honra -3] Os gritos da criança mancharão seus pesadelos.")
 
-        if rolar_teste("destreza", jogador["destreza"], 22):
+        if rolar_teste("destreza", jogador["destreza"], 19):
             slow_print(
                 "SUCESSO! Você se move com o vento. Os guardas estão distraídos demais com a crueldade "
                 "e não percebem a sua sombra deslizando pela floresta morta além da estrada."
@@ -133,12 +159,15 @@ def cena_estrada(jogador):
                 "FALHA! Um corvo grasna de repente e voa do seu esconderijo. O guarda joga a criança no chão "
                 "e atira uma faca de arremesso que crava no seu ombro enquanto você foge! Eles o avistaram!"
             )
-            resultado = iniciar_combate(jogador, "Patrulha de Cinza", hp_inimigo=35, min_dano=3, max_dano=7)
+            dano = random.randint(1, 2)
+            jogador["vitalidade"] -= dano
+            print(f"Você perdeu {dano} de Vitalidade.")
+            resultado = iniciar_combate(jogador, "Patrulha de Cinza", hp_inimigo=20, min_dano=2, max_dano=4)
             mercador_salvo = False 
 
     elif escolha == "3":
         slow_print("\nVocê se lembra das noites frias. 'Criaturas de cinza enxergam a vida, não a luz', dizia o mestre.")
-        if rolar_teste("conhecimento", jogador["conhecimento"], 23):
+        if rolar_teste("conhecimento", jogador["conhecimento"], 18):
             slow_print(
                 "SUCESSO! Você quebra uma pedra de enxofre que trazia do cume e a arremessa nas brasas da carroça. "
                 "Uma fumaça mística ofusca os sentidos vitais dos guardas. Eles gritam, cegos. O mercador aproveita "
@@ -152,14 +181,14 @@ def cena_estrada(jogador):
                 "FALHA! Você tenta criar o pó ofuscante, mas a umidade da lama estraga a mistura. "
                 "Os guardas o farejam. Você é forçado a lutar contra oponentes enfurecidos de uma vez!"
             )
-            resultado = iniciar_combate(jogador, "Guardas Enfurecidos", hp_inimigo=40, min_dano=5, max_dano=10)
+            resultado = iniciar_combate(jogador, "Guardas Enfurecidos", hp_inimigo=25, min_dano=2, max_dano=5)
             if resultado == "vitoria":
                 mercador_salvo = True
 
     else:
         slow_print("A indecisão é a mãe da morte. Os guardas atiram em você antes do combate começar!")
-        jogador["vitalidade"] -= 5
-        iniciar_combate(jogador, "Patrulha de Cinza", hp_inimigo=35, min_dano=3, max_dano=8)
+        jogador["vitalidade"] -= 2
+        iniciar_combate(jogador, "Patrulha de Cinza", hp_inimigo=20, min_dano=2, max_dano=4)
         mercador_salvo = False
 
     if jogador["vitalidade"] <= 0: return jogador
@@ -260,7 +289,7 @@ def cena_caverna(jogador):
         jogador["honra"] += 1
         print("[Honra +1] Enfrentar um demônio de frente exige coragem inabalável.")
 
-        if rolar_teste("kenjutsu", jogador["kenjutsu"], 25):
+        if rolar_teste("kenjutsu", jogador["kenjutsu"], 22):
             slow_print(
                 "SUCESSO! O aço de meteorito zune no ar escuro. Seu corte é um arco de luz azul "
                 "perfeito. Duas das patas grossas do monstro são decepadas de uma só vez. O Tsuchigumo "
@@ -272,7 +301,7 @@ def cena_caverna(jogador):
                 "FALHA! A carapaça do monstro é dura como ferro fundido. A Kagekiri resvala com faíscas. "
                 "O impacto o desequilibra, e a fera avança furiosamente sobre você!"
             )
-            resultado = iniciar_combate(jogador, "Tsuchigumo Colossal", hp_inimigo=50, min_dano=5, max_dano=12)
+            resultado = iniciar_combate(jogador, "Tsuchigumo Colossal", hp_inimigo=30, min_dano=3, max_dano=6)
             if resultado == "vitoria": yokai_derrotado = True
 
     elif escolha == "2":
@@ -280,7 +309,7 @@ def cena_caverna(jogador):
         jogador["honra"] -= 1
         print("[Honra -1] Fugir de uma besta infernal o mantém vivo, mas mancha o orgulho.")
 
-        if rolar_teste("destreza", jogador["destreza"], 24):
+        if rolar_teste("destreza", jogador["destreza"], 20):
             slow_print(
                 "SUCESSO! Você é uma sombra ágil. Quicando na parede úmida, você gira no ar, passando "
                 "milímetros acima das presas envenenadas da criatura. Você aterrissa rolando do outro lado "
@@ -291,12 +320,15 @@ def cena_caverna(jogador):
                 "FALHA! O musgo na parede esfarela sob sua bota. Você perde o impulso e cai "
                 "direto na borda da teia. Os fios cortam suas roupas como navalhas. O monstro te persegue!"
             )
-            resultado = iniciar_combate(jogador, "Tsuchigumo Faminto", hp_inimigo=45, min_dano=4, max_dano=10)
+            dano = random.randint(1, 3)
+            jogador["vitalidade"] -= dano
+            print(f"Você perdeu {dano} de Vitalidade na teia.")
+            resultado = iniciar_combate(jogador, "Tsuchigumo Faminto", hp_inimigo=25, min_dano=2, max_dano=5)
             if resultado == "vitoria": yokai_derrotado = True
 
     elif escolha == "3":
         slow_print("\nVocê crava a espada na pedra, une os dedos polegar e indicador, e entoa o mantra de Kazunari.")
-        if rolar_teste("conhecimento", jogador["conhecimento"], 23):
+        if rolar_teste("conhecimento", jogador["conhecimento"], 19):
             slow_print(
                 "SUCESSO! As palavras antigas ganham vida. Uma faísca azul salta de seus dedos e "
                 "inflama o miasma da caverna. Uma luz cegante e purificadora explode. "
@@ -308,12 +340,16 @@ def cena_caverna(jogador):
                 "FALHA! Você troca uma única sílaba do mantra complexo. A magia implode em suas mãos "
                 "com um estalo abafado, queimando seus dedos. O Yokai, enfurecido pelo barulho, investe."
             )
-            resultado = iniciar_combate(jogador, "Tsuchigumo Enfurecido", hp_inimigo=40, min_dano=6, max_dano=14)
+            dano = random.randint(1, 2)
+            jogador["vitalidade"] -= dano
+            print(f"Suas mãos queimam. Você perdeu {dano} de Vitalidade.")
+            resultado = iniciar_combate(jogador, "Tsuchigumo Enfurecido", hp_inimigo=25, min_dano=3, max_dano=6)
             if resultado == "vitoria": yokai_derrotado = True
 
     else:
         slow_print("Opção inválida. A escuridão não espera indecisos. A besta salta sobre você.")
-        iniciar_combate(jogador, "Tsuchigumo", hp_inimigo=45, min_dano=5, max_dano=10)
+        jogador["vitalidade"] -= 2
+        iniciar_combate(jogador, "Tsuchigumo", hp_inimigo=25, min_dano=2, max_dano=5)
 
     if jogador["vitalidade"] <= 0: return jogador
 
@@ -355,9 +391,11 @@ def cena_caverna(jogador):
             "\nVocê junta fungos secos e cria uma fogueira minúscula, que não emite luz, apenas calor. "
             "Você medita, limpa a Kagekiri e aperta as ataduras. A memória do seu mestre conforta seu coração."
         )
-        cura = random.randint(10, 20)
-        jogador["vitalidade"] = min(100, jogador.get("vitalidade", 100) + cura)
-        print(f"[Descanso] Você recuperou {cura} de Vitalidade. (HP Atual: {jogador['vitalidade']})")
+        # Cura adaptada para quem tem apenas 15 de vida base
+        cura = random.randint(3, 6)
+        max_vit = jogador.get("max_vitalidade", jogador.get("vitalidade", 15))
+        jogador["vitalidade"] = min(max_vit, jogador.get("vitalidade", 10) + cura)
+        print(f"[Descanso] Você recuperou Vitalidade. (HP Atual: {jogador['vitalidade']})")
         slow_print("Com o corpo preparado, você inicia a lenta e cuidadosa descida pelo paredão quando o sol encoberto nasce.")
 
     elif escolha_descida == "2":
@@ -375,7 +413,7 @@ def cena_caverna(jogador):
 
     else:
         slow_print("Hesitando no limite do abismo, uma rajada de vento gelado quase o joga para baixo, forçando-o a descer às pressas.")
-        jogador["vitalidade"] -= 2
+        jogador["vitalidade"] -= 1
 
     return jogador
 
@@ -408,7 +446,7 @@ def jogar(jogador):
         jogador = cena_caverna(jogador)
     else:
         print("Sem saber para onde ir, você vagueia e perde o equilíbrio nas pedras.")
-        jogador["vitalidade"] -= 3
+        jogador["vitalidade"] -= 1
         return jogar(jogador)
 
     return jogador
